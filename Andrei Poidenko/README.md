@@ -1,2 +1,2 @@
 Catalog Andrei Poidenko
-andrey-p@ukr.net
+email andrey-p@ukr.net
