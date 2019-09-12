@@ -1,2 +1,2 @@
 Zahorodnii Dmitriy
-email: zag071200410
+email: zag07z410@gmail.com
