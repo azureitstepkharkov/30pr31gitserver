@@ -27,14 +27,50 @@ public class OracleServlet extends HttpServlet {
 
     private Session session;
     private  ServiceRegistry serviceRegistry;   
-    
-    
+    //
+    //
+    private static void testEmployeesEx() throws ExceptionInInitializerError, HibernateException {
+                    //ORA-12705: Cannot access NLS data files or invalid environment specified
+            java.util.Locale locale = java.util.Locale.getDefault();
+            java.util.Locale.setDefault(java.util.Locale.ENGLISH);
+        SessionFactory mFctory;
+        try{
+            mFctory = new Configuration().configure().buildSessionFactory();
+        }catch (Throwable ex) {
+            System.err.println("Couldn't create session factory." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
+               java.util.Locale.setDefault(locale);
+        Session session = null;
+        Transaction tx = null;
+        //
+        session = mFctory.openSession();
+        System.out.println("--- Find all Employees ---");
+        Query query = session.createQuery("SELECT e FROM Employees e");
+	List<Employees> employees = query.list();
+	for (Employees foundEmployee : employees) 
+        {
+	System.out.println(String.format("Found: %s\n", foundEmployee));
+        
+        //for (Departments dep : foundEmployee.getDepartments()) 
+        Departments dep = foundEmployee.getDepartments();
+        {
+	System.out.println(String.format("deps info: %s\n", dep));
+        }
+        //
+        }
+        session.close();
+        //
+    }
+    //
+    //
     public Session openSession() throws HibernateException {
         // loads configuration and mappings
         Configuration configuration = new Configuration().configure();
         ServiceRegistryBuilder registry = new ServiceRegistryBuilder();
         registry.applySettings(configuration.getProperties());
-        
+                    java.util.Locale locale = java.util.Locale.getDefault();
+            java.util.Locale.setDefault(java.util.Locale.ENGLISH);
         try {
 
             serviceRegistry = new StandardServiceRegistryBuilder()
@@ -43,13 +79,20 @@ public class OracleServlet extends HttpServlet {
             
             SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             // obtains the session
-            Session session = sessionFactory.openSession();
+            //Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
 
         } catch (Exception e) {
             
-            System.err.println(e.getMessage());
-
+            String str = e.toString();
+            String msg = e.getMessage();
+            System.out.println(str);
+            System.out.println(msg);
+        }
+        finally
+        {
+               java.util.Locale.setDefault(locale);
         }
 
 //        SessionFactory mFctory;
@@ -93,7 +136,9 @@ public class OracleServlet extends HttpServlet {
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        //
+        //testEmployeesEx();
+        //
         Session session = openSession();
         List<Departments> departments = null;
         
